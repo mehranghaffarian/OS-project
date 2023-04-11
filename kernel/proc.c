@@ -146,6 +146,10 @@ found:
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
 
+  acquire(&tickslock);
+  p->pBirthTick = ticks;
+  release(&tickslock);
+  
   return p;
 }
 
@@ -680,4 +684,22 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+//get the ticks that the relevant process has experienced
+int
+getProcTick(int targetProcessID){
+  uint xticks;
+
+  acquire(&tickslock);
+  xticks = ticks;
+  release(&tickslock);
+
+  struct proc *p; 
+  
+  for(p = proc; p < &proc[NPROC]; p++) {
+    if(p->pid == targetProcessID)
+      return xticks - p->pBirthTick;
+  }
+  return -1;
 }

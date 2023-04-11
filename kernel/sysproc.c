@@ -93,10 +93,8 @@ sys_uptime(void)
 uint64
 sys_getProcTick(void)
 {
-  uint xticks;
+  int pid;
 
-  acquire(&tickslock);
-  xticks = ticks;
-  release(&tickslock);
-  return xticks;
+  argint(0, &pid);
+  return getProcTick(pid);
 }
