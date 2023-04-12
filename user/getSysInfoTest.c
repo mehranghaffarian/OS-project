@@ -4,7 +4,7 @@
 
 int main(){
 struct sysInfo info;
-int result = getSysInfo(&info);
+int result = getSysInfo((uint64) &info);
 
 if(result == 0){
 printf("the sysInfo is as below:\nuptime: %d\ntootalram: %d\nfreeram: %d\nprocs: %d\n", info.uptime, info.totalram, info.freeram, info.procs);

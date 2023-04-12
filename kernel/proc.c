@@ -6,7 +6,6 @@
 #include "proc.h"
 #include "defs.h"
 #include "shared/info.h"
-#include "kalloc.c"
 
 struct cpu cpus[NCPU];
 
@@ -712,14 +711,22 @@ getProcTick(int targetProcessID){
 
 //gets the sysInfo
 int
-getSysInfo(struct sysInfo* sysInformation){
+getSysInfo(uint64 sysInformation){
+  struct proc *currentProcess = myproc();
+  struct sysInfo si;
+
+  //stting the uptime
   acquire(&tickslock);
-  (*sysInformation).uptime = ticks * 0.1;//each ticks takes 0.1s
-  printf("ticks values: %d\n", ticks);
+  si.uptime = ticks * 0.1;//each ticks takes 0.1s
   release(&tickslock);
+  
+  // setting the free memory amount
+  si.freeram = getFreeMemory() * PGSIZE;
 
-  kmem.freelist
+  // calculating the whole memory size
+  si.totalram = PHYSTOP - KERNBASE;
 
+  // setting the number of processes
   int procCount = 0;
   struct proc *p; 
   
@@ -729,8 +736,8 @@ getSysInfo(struct sysInfo* sysInformation){
       procCount++;
     release(&p->lock);
   }
-  (*sysInformation).procs = procCount;
-  printf("number of processes: %d\n", procCount);
+  si.procs = procCount;
   
+  copyout(currentProcess->pagetable, sysInformation, (char *)&si, sizeof(si));
   return 0;
 }

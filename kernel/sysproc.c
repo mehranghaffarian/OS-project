@@ -105,5 +105,5 @@ sys_getSysInfo(void)
   uint64 sysInformation;
 
   argaddr(0, &sysInformation);
-  return getSysInfo((struct sysInfo*) &sysInformation);
+  return getSysInfo(sysInformation);
 }

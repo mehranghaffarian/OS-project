@@ -24,7 +24,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int getProcTick(int);
-int getSysInfo(struct sysInfo*);
+int getSysInfo(uint64 sysInfo);
 
 // ulib.c
 int stat(const char*, struct stat*);
