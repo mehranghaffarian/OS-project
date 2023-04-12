@@ -722,9 +722,13 @@ getSysInfo(uint64 sysInformation){
   
   // setting the free memory amount
   si.freeram = getFreeMemory() * PGSIZE;
+  if(si.freeram < 0)
+    return -1;
 
   // calculating the whole memory size
   si.totalram = PHYSTOP - KERNBASE;
+  if(si.totalram < 0)
+    return -1;
 
   // setting the number of processes
   int procCount = 0;
@@ -737,6 +741,8 @@ getSysInfo(uint64 sysInformation){
     release(&p->lock);
   }
   si.procs = procCount;
+  if(procCount > NPROC)
+    return -1;
   
   copyout(currentProcess->pagetable, sysInformation, (char *)&si, sizeof(si));
   return 0;
