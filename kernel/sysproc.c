@@ -98,3 +98,12 @@ sys_getProcTick(void)
   argint(0, &pid);
   return getProcTick(pid);
 }
+
+uint64
+sys_getSysInfo(void)
+{
+  uint64 sysInformation;
+
+  argaddr(0, &sysInformation);
+  return getSysInfo((struct sysInfo*) &sysInformation);
+}

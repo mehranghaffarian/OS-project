@@ -50,7 +50,7 @@ forktest(void)
 
 int
 main(void)
-{
+  {
   forktest();
   exit(0);
 }

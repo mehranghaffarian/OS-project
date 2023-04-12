@@ -1,3 +1,4 @@
+struct sysInfo;
 struct stat;
 
 // system calls
@@ -23,6 +24,7 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int getProcTick(int);
+int getSysInfo(struct sysInfo*);
 
 // ulib.c
 int stat(const char*, struct stat*);

@@ -5,6 +5,8 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "shared/info.h"
+#include "kalloc.c"
 
 struct cpu cpus[NCPU];
 
@@ -686,7 +688,7 @@ procdump(void)
   }
 }
 
-//get the ticks that the relevant process has experienced
+//gets the ticks that the relevant process has experienced
 int
 getProcTick(int targetProcessID){
   uint xticks;
@@ -698,8 +700,37 @@ getProcTick(int targetProcessID){
   struct proc *p; 
   
   for(p = proc; p < &proc[NPROC]; p++) {
-    if(p->pid == targetProcessID)
-      return xticks - p->pBirthTick;
+    acquire(&p->lock);
+    if(p->pid == targetProcessID){
+      int result = xticks - p->pBirthTick;
+      release(&p->lock);
+      return result;
+    }
   }
   return -1;
+}
+
+//gets the sysInfo
+int
+getSysInfo(struct sysInfo* sysInformation){
+  acquire(&tickslock);
+  (*sysInformation).uptime = ticks * 0.1;//each ticks takes 0.1s
+  printf("ticks values: %d\n", ticks);
+  release(&tickslock);
+
+  kmem.freelist
+
+  int procCount = 0;
+  struct proc *p; 
+  
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    if(p->state != UNUSED)
+      procCount++;
+    release(&p->lock);
+  }
+  (*sysInformation).procs = procCount;
+  printf("number of processes: %d\n", procCount);
+  
+  return 0;
 }
